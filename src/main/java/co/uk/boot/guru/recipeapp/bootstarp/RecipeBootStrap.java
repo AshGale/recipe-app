@@ -4,6 +4,7 @@ import co.uk.boot.guru.recipeapp.domain.*;
 import co.uk.boot.guru.recipeapp.repositories.CategoryRepository;
 import co.uk.boot.guru.recipeapp.repositories.RecipeRepository;
 import co.uk.boot.guru.recipeapp.repositories.UnitOfMeasureRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class RecipeBootStrap implements ApplicationListener<ContextRefreshedEvent> {
 
@@ -30,6 +32,7 @@ public class RecipeBootStrap implements ApplicationListener<ContextRefreshedEven
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
 
         recipeRepository.saveAll(getRecipies());
+        log.debug("-->Loading Recipes");
     }
 
     private List<Recipe> getRecipies() {
@@ -66,6 +69,7 @@ public class RecipeBootStrap implements ApplicationListener<ContextRefreshedEven
             throw new RuntimeException("Expected UOM Found");
         }
 
+
         UnitOfMeasure eachUom = eachUomOptional.get();
         UnitOfMeasure tableSpoonUom = tableSpoonsUomOptional.get();
         UnitOfMeasure teaspoonUom = tableSpoonsUomOptional.get();
@@ -73,7 +77,7 @@ public class RecipeBootStrap implements ApplicationListener<ContextRefreshedEven
         UnitOfMeasure pintUom = pintsUomOptional.get();
         UnitOfMeasure cupUom = cupsUomOptional.get();
 
-        System.out.println("loaded UOM's");
+        log.debug("loaded UOMs");
 
         Optional<Category> americanCategoryOptional = categoryRepository.findByDescription("American");
         if (!americanCategoryOptional.isPresent()){
@@ -88,7 +92,7 @@ public class RecipeBootStrap implements ApplicationListener<ContextRefreshedEven
         Category americanCategory = americanCategoryOptional.get();
         Category spicyCategory = spicyCategoryOptional.get();
 
-        System.out.println("loaded Categories's");
+        log.debug("loaded Categories");
 
         //Yummy Guac
         Recipe guacRecipe = new Recipe();
@@ -122,9 +126,11 @@ public class RecipeBootStrap implements ApplicationListener<ContextRefreshedEven
                 "To extend a limited supply of avocados, add either sour cream or cottage cheese to your guacamole dip. Purists may be horrified, but so what? It tastes great.\n" +
                 "\n" +
                 "For a deviled egg version with guacamole, try our Guacamole Deviled Eggs!");
-        guacRecipe.setNotes(guacNotes);
 
+        guacRecipe.setNotes(guacNotes);
+        System.out.println("ok");
         guacRecipe.addIngredient(new Ingredient("ripe avocados", new BigDecimal(2), eachUom));
+        System.out.println("nok");
         guacRecipe.addIngredient(new Ingredient("Kosher salt", new BigDecimal(".5"), teaspoonUom));
         guacRecipe.addIngredient(new Ingredient("fresh lime juice or lemon juice", new BigDecimal(2), tableSpoonUom));
         guacRecipe.addIngredient(new Ingredient("minced red onion or thinly sliced green onion", new BigDecimal(2), tableSpoonUom));
@@ -133,9 +139,10 @@ public class RecipeBootStrap implements ApplicationListener<ContextRefreshedEven
         guacRecipe.addIngredient(new Ingredient("freshly grated black pepper", new BigDecimal(2), dashUom));
         guacRecipe.addIngredient(new Ingredient("ripe tomato, seeds and pulp removed, chopped", new BigDecimal(".5"), eachUom));
 
+        System.out.println("here :/");
         guacRecipe.getCategories().add(americanCategory);
         guacRecipe.getCategories().add(spicyCategory);
-
+        System.out.println("here :)");
         recipes.add(guacRecipe);
 
         //Yummy Tacos
@@ -195,7 +202,7 @@ public class RecipeBootStrap implements ApplicationListener<ContextRefreshedEven
 
         recipes.add(tacosRecipe);
 
-        System.out.println("-->Loaded Recipes");
+        log.debug("-->Loaded Recipes");
         return recipes;
     }
 

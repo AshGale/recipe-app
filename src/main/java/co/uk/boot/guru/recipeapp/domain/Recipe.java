@@ -1,10 +1,16 @@
 package co.uk.boot.guru.recipeapp.domain;
 
+import lombok.Data;
+
 import javax.persistence.*;
-import java.util.HashSet;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Set;
 
+
+@Data
 @Entity
+//@EqualsAndHashCode(exclude={"categories","ingredients"})
 public class Recipe {
 
     @Id
@@ -13,140 +19,191 @@ public class Recipe {
 
     private String description;
     private Integer prepTime;
-    private  Integer cookTime;
-    private  Integer servings;
-    private  String source;
-    private  String url;
+    private Integer cookTime;
+    private Integer servings;
+    private String source;
+    private String url;
 
     @Lob
-    private  String directions;
+    private String directions;
+
+    //as Hashmap, recursive error occurs in lombok
+    //can make set, but have to override the set methods
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
+    private Set<Ingredient> ingredients = new Set<Ingredient>() {
+        @Override
+        public int size() {
+            return 0;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            return false;
+        }
+
+        @Override
+        public Iterator<Ingredient> iterator() {
+            return null;
+        }
+
+        @Override
+        public Object[] toArray() {
+            return new Object[0];
+        }
+
+        @Override
+        public <T> T[] toArray(T[] a) {
+            return null;
+        }
+
+        @Override
+        public boolean add(Ingredient ingredient) {
+            return false;
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            return false;
+        }
+
+        @Override
+        public boolean containsAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends Ingredient> c) {
+            return false;
+        }
+
+        @Override
+        public boolean retainAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean removeAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public void clear() {
+
+        }
+    };
+
+    @Lob
+    private Byte[] image;
 
     @Enumerated(value = EnumType.STRING)
     private Difficulty difficulty;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
-    private Set<Ingredient> ingredients = new HashSet<>();
-
-    @Lob
-    private  Byte[] image;
-
     @OneToOne(cascade = CascadeType.ALL)
     private Notes notes;
+
 
     @ManyToMany
     @JoinTable(name = "recipe_category",
             joinColumns = @JoinColumn(name = "recipe_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private Set<Category> categories = new HashSet<>();
+    private Set<Category> categories = new Set<Category>() {
+        @Override
+        public int size() {
+            return 0;
+        }
 
-    public Long getId() {
-        return id;
-    }
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+        @Override
+        public boolean contains(Object o) {
+            return false;
+        }
 
-    public String getDescription() {
-        return description;
-    }
+        @Override
+        public Iterator<Category> iterator() {
+            return null;
+        }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+        @Override
+        public Object[] toArray() {
+            return new Object[0];
+        }
 
-    public Integer getPrepTime() {
-        return prepTime;
-    }
+        @Override
+        public <T> T[] toArray(T[] a) {
+            return null;
+        }
 
-    public void setPrepTime(Integer prepTime) {
-        this.prepTime = prepTime;
-    }
+        @Override
+        public boolean add(Category category) {
+            return false;
+        }
 
-    public Integer getCookTime() {
-        return cookTime;
-    }
+        @Override
+        public boolean remove(Object o) {
+            return false;
+        }
 
-    public void setCookTime(Integer cookTime) {
-        this.cookTime = cookTime;
-    }
+        @Override
+        public boolean containsAll(Collection<?> c) {
+            return false;
+        }
 
-    public Integer getServings() {
-        return servings;
-    }
+        @Override
+        public boolean addAll(Collection<? extends Category> c) {
+            return false;
+        }
 
-    public void setServings(Integer servings) {
-        this.servings = servings;
-    }
+        @Override
+        public boolean retainAll(Collection<?> c) {
+            return false;
+        }
 
-    public String getSource() {
-        return source;
-    }
+        @Override
+        public boolean removeAll(Collection<?> c) {
+            return false;
+        }
 
-    public void setSource(String source) {
-        this.source = source;
-    }
+        @Override
+        public void clear() {
 
-    public String getUrl() {
-        return url;
-    }
+        }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+        @Override
+        public boolean equals(Object o) {
+            return false;
+        }
 
-    public String getDirections() {
-        return directions;
-    }
-
-    public void setDirections(String directions) {
-        this.directions = directions;
-    }
-
-    public Difficulty getDifficulty() {
-        return difficulty;
-    }
-
-    public void setDifficulty(Difficulty difficulty) {
-        this.difficulty = difficulty;
-    }
-
-    public Recipe addIngredient(Ingredient ingredient){
-        ingredient.setRecipe(this);
-        this.ingredients.add(ingredient);
-        return this;
-    }
-
-    public Set<Ingredient> getIngredients() {
-        return ingredients;
-    }
-
-    public void setIngredients(Set<Ingredient> ingredients) {
-        this.ingredients = ingredients;
-    }
-
-    public Byte[] getImage() {
-        return image;
-    }
-
-    public void setImage(Byte[] image) {
-        this.image = image;
-    }
-
-    public Notes getNotes() {
-        return notes;
-    }
+        @Override
+        public int hashCode() {
+            return 0;
+        }
+    };
 
     public void setNotes(Notes notes) {
         this.notes = notes;
         notes.setRecipe(this);
     }
 
-    public Set<Category> getCategories() {
-        return categories;
-    }
+    public Recipe addIngredient(Ingredient ingredient){
+        ingredient.setRecipe(this);
 
-    public void setCategories(Set<Category> categories) {
-        this.categories = categories;
+
+//        ArrayList<Ingredient> temp = new ArrayList<>();
+//        temp.add(ingredient);
+//        System.out.println("adding temp");
+//        this.ingredients.addAll(temp);
+//        System.out.println("added temp");
+
+        this.ingredients.add(ingredient);
+        return this;
     }
 }

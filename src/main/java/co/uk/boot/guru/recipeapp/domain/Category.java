@@ -1,8 +1,14 @@
 package co.uk.boot.guru.recipeapp.domain;
 
+import lombok.Data;
+
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Set;
 
+//@EqualsAndHashCode(exclude="recipes")
+@Data
 @Entity
 public class Category {
 
@@ -12,29 +18,81 @@ public class Category {
     private String description;
 
     @ManyToMany(mappedBy = "categories")
-    private Set<Recipe> recipes;
+    private Set<Recipe> recipes = new Set<Recipe>() {
+        @Override
+        public int size() {
+            return 0;
+        }
 
-    public Long getId() {
-        return Id;
-    }
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
 
-    public void setId(Long id) {
-        Id = id;
-    }
+        @Override
+        public boolean contains(Object o) {
+            return false;
+        }
 
-    public String getDescription() {
-        return description;
-    }
+        @Override
+        public Iterator<Recipe> iterator() {
+            return null;
+        }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+        @Override
+        public Object[] toArray() {
+            return new Object[0];
+        }
 
-    public Set<Recipe> getRecipes() {
-        return recipes;
-    }
+        @Override
+        public <T> T[] toArray(T[] a) {
+            return null;
+        }
 
-    public void setRecipes(Set<Recipe> recipes) {
-        this.recipes = recipes;
-    }
+        @Override
+        public boolean add(Recipe recipe) {
+            return false;
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            return false;
+        }
+
+        @Override
+        public boolean containsAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends Recipe> c) {
+            return false;
+        }
+
+        @Override
+        public boolean retainAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean removeAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public void clear() {
+
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
+        }
+    };
+
 }
