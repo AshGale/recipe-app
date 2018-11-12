@@ -1,5 +1,7 @@
 package co.uk.boot.guru.recipeapp.Services;
 
+import co.uk.boot.guru.recipeapp.converters.RecipeCommandToRecipe;
+import co.uk.boot.guru.recipeapp.converters.RecipeToRecipeCommand;
 import co.uk.boot.guru.recipeapp.domain.Recipe;
 import co.uk.boot.guru.recipeapp.repositories.RecipeRepository;
 import org.junit.Before;
@@ -22,11 +24,17 @@ public class RecipeServiceImplTest {
     @Mock
     RecipeRepository recipeRepository;
 
+    @Mock
+    RecipeToRecipeCommand recipeToRecipeCommand;
+
+    @Mock
+    RecipeCommandToRecipe recipeCommandToRecipe;
+
     @Before
     public void setup() throws Exception{
         MockitoAnnotations.initMocks(this);
 
-        recipeService = new RecipeServiceImpl(recipeRepository);
+        recipeService = new RecipeServiceImpl(recipeRepository, recipeCommandToRecipe, recipeToRecipeCommand);
     }
 
     @Test
@@ -55,5 +63,6 @@ public class RecipeServiceImplTest {
         Set<Recipe> recipes = recipeService.getRecipes();
         assertEquals(recipes.size(),1);
         verify(recipeRepository, times(1)).findAll();
+        verify(recipeRepository, never()).findById(anyLong());
     }
 }
