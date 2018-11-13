@@ -1,6 +1,8 @@
 package co.uk.boot.guru.recipeapp.controllers;
 
+import co.uk.boot.guru.recipeapp.Services.IngredientService;
 import co.uk.boot.guru.recipeapp.Services.RecipeService;
+import co.uk.boot.guru.recipeapp.commands.IngredientCommand;
 import co.uk.boot.guru.recipeapp.commands.RecipeCommand;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +21,9 @@ public class IngredientControllerTest {
     @Mock
     RecipeService recipeService;
 
+    @Mock
+    IngredientService ingredientService;
+
     IngredientController ingredientController;
 
     MockMvc mockMvc;
@@ -27,7 +32,7 @@ public class IngredientControllerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        ingredientController = new IngredientController(recipeService);
+        ingredientController = new IngredientController(recipeService, ingredientService);
         mockMvc = MockMvcBuilders.standaloneSetup(ingredientController).build();
     }
 
@@ -44,4 +49,20 @@ public class IngredientControllerTest {
 
         verify(recipeService,times(1)).findCommandById(anyLong());
     }
+
+    @Test
+    public void showIngredient() throws Exception {
+
+        IngredientCommand ingredientCommand = new IngredientCommand();
+
+        when(ingredientService.findByRecipeIdAndId(anyLong(),anyLong())).thenReturn(ingredientCommand);
+
+        mockMvc.perform(get("/recipe/1/ingredient/1/show"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("recipe/ingredient/show"))
+                .andExpect(model().attributeExists("ingredient"));
+
+    }
+
+
 }
