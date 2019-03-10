@@ -2,6 +2,7 @@ package co.uk.boot.guru.recipeapp.controllers;
 
 import co.uk.boot.guru.recipeapp.Services.IngredientService;
 import co.uk.boot.guru.recipeapp.Services.RecipeService;
+import co.uk.boot.guru.recipeapp.Services.UnitOfMeasureService;
 import co.uk.boot.guru.recipeapp.commands.IngredientCommand;
 import co.uk.boot.guru.recipeapp.commands.RecipeCommand;
 import org.junit.Before;
@@ -24,6 +25,9 @@ public class IngredientControllerTest {
     @Mock
     IngredientService ingredientService;
 
+    @Mock
+    UnitOfMeasureService unitOfMeasureService;
+
     IngredientController ingredientController;
 
     MockMvc mockMvc;
@@ -32,7 +36,8 @@ public class IngredientControllerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        ingredientController = new IngredientController(recipeService, ingredientService);
+
+        ingredientController = new IngredientController(recipeService, ingredientService, unitOfMeasureService);
         mockMvc = MockMvcBuilders.standaloneSetup(ingredientController).build();
     }
 

@@ -7,4 +7,6 @@ import org.springframework.stereotype.Service;
 public interface IngredientService {
 
     IngredientCommand findByRecipeIdAndId(Long id, Long aLong);
+
+    IngredientCommand saveIngredient(IngredientCommand command);
 }
